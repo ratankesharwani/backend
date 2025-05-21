@@ -11,16 +11,18 @@ import { Project } from './project/project.entity';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: 'postgres',
+      type: 'mysql',
       host: 'localhost',
-      port: 5432,
-      username: 'postgres',
+      port: 3306,
+      username: 'root',
       password: 'root',
       database: 'dev_dashboard',
       entities: [User, Project, Milestone],
-      synchronize: true,
+      synchronize: true, // Don't use in production
     }),
-    AuthModule, ProjectModule],
+    AuthModule,
+    ProjectModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

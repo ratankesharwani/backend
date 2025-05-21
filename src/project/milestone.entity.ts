@@ -10,7 +10,7 @@ export class Milestone {
   title: string;
 
   @Column()
-  dueDate: Date;
+  due_date: Date;
 
   @ManyToOne(() => Project, project => project.milestones)
   project: Project;

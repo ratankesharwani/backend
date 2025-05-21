@@ -1,6 +1,6 @@
-import { User } from "src/auth/user.entity";
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from "typeorm";
-import { Milestone } from "./milestone.entity";
+import { User } from 'src/auth/user.entity';
+import { Milestone } from './milestone.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 
 @Entity()
 export class Project {
@@ -13,14 +13,14 @@ export class Project {
   @Column('text')
   description: string;
 
-  @Column('text', { array: true })
-  techStack: string[];
+  @Column('simple-array')
+  tech_stack: string[];
 
   @Column()
-  estimatedDuration: number;
+  estimated_duration: number;
 
   @Column({ nullable: true })
-  logoPath: string;
+  logo_path: string;
 
   @ManyToOne(() => User, user => user.id)
   user: User;
