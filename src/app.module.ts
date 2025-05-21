@@ -18,7 +18,7 @@ import { Project } from './project/project.entity';
       password: 'root',
       database: 'dev_dashboard',
       entities: [User, Project, Milestone],
-      synchronize: true, // Don't use in production
+      synchronize: true
     }),
     AuthModule,
     ProjectModule,

@@ -9,8 +9,11 @@ export class Milestone {
   @Column()
   title: string;
 
-  @Column()
+  @Column({ nullable: true }) // allow nullable if not provided
   due_date: Date;
+
+  @Column({ nullable: true }) // add this to match payload
+  description: string;
 
   @ManyToOne(() => Project, project => project.milestones)
   project: Project;

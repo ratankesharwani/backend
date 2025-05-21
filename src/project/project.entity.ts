@@ -13,10 +13,10 @@ export class Project {
   @Column('text')
   description: string;
 
-  @Column('simple-array')
+  @Column('simple-array', { nullable: true })
   tech_stack: string[];
 
-  @Column()
+  @Column({ nullable: true })
   estimated_duration: number;
 
   @Column({ nullable: true })
@@ -25,6 +25,6 @@ export class Project {
   @ManyToOne(() => User, user => user.id)
   user: User;
 
-  @OneToMany(() => Milestone, milestone => milestone.project, { cascade: true })
+  @OneToMany(() => Milestone, milestone => milestone.project, { cascade: true, eager: true })
   milestones: Milestone[];
 }

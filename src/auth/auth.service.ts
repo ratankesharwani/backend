@@ -60,4 +60,10 @@ export class AuthService {
     }
     return { message: 'Password is valid', userId: user.id };
   }
+
+  async getAllUsers() {
+    const users = await this.userRepository.find();
+    return users.map(({ password, ...rest }) => rest); // omit password
+  }
+
 }

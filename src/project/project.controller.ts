@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, HttpException, HttpStatus } from '@nestjs/common';
 import { ProjectsService } from './project.service';
 
 @Controller('projects')
@@ -16,8 +16,24 @@ export class ProjectsController {
   }
 
   @Post()
-  create(@Body() projectData: any) {
-    return this.projectsService.create(projectData);
+  async create(@Body() projectData: any) {
+    try {
+      const result = await this.projectsService.create(projectData);
+      return {
+        status: 'success',
+        message: 'Project created successfully',
+        data: result,
+      };
+    } catch (error) {
+      throw new HttpException(
+        {
+          status: 'error',
+          message: error.message || 'Something went wrong while creating the project',
+          error: error?.response || null,
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   @Put(':id')
