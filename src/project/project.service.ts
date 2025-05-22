@@ -21,7 +21,7 @@ export class ProjectsService {
     return this.projectRepo.findOne({ where: { id }, relations: ['milestones', 'user'] });
   }
 
- async create(projectData: any) {
+  async create(projectData: any) {
     try {
       if (!projectData.userId) {
         throw new BadRequestException('User ID is required');
@@ -46,16 +46,50 @@ export class ProjectsService {
 
       return await this.projectRepo.save(project);
     } catch (error) {
-      // Re-throw to controller to handle consistently
       throw error;
     }
   }
 
 
   async update(id: number, projectData: any) {
-    await this.projectRepo.update(id, projectData);
-    return this.projectRepo.findOne({ where: { id }, relations: ['milestones'] });
+  try {
+    const existingProject = await this.projectRepo.findOne({ where: { id } });
+    if (!existingProject) {
+      throw new NotFoundException(`Project with ID ${id} not found`);
+    }
+
+    if (projectData.userId) {
+      const user = await this.userRepo.findOne({ where: { id: projectData.userId } });
+      if (!user) {
+        throw new NotFoundException(`User with ID ${projectData.userId} not found`);
+      }
+      projectData.user = user;
+    }
+
+    if (typeof projectData.tech_stack === 'string') {
+      projectData.tech_stack = projectData.tech_stack
+        .split(',')
+        .map((t: string) => t.trim())
+        .filter(Boolean);
+    }
+
+    // Merge existing data and update fields
+const updatedProject = this.projectRepo.merge(existingProject, projectData);
+
+// Save updates — this handles relations too
+await this.projectRepo.save(updatedProject);
+
+    return await this.projectRepo
+      .createQueryBuilder('project')
+      .leftJoinAndSelect('project.user', 'user')
+      .leftJoinAndSelect('project.milestones', 'milestones')
+      .where('project.id = :id', { id })
+      .getOne();
+  } catch (error) {
+    throw error;
   }
+}
+
 
   async remove(id: number) {
     return this.projectRepo.delete(id);

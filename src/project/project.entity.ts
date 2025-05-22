@@ -25,6 +25,6 @@ export class Project {
   @ManyToOne(() => User, user => user.id)
   user: User;
 
-  @OneToMany(() => Milestone, milestone => milestone.project, { cascade: true, eager: true })
+  @OneToMany(() => Milestone, milestone => milestone.project, { cascade: true, eager: false })
   milestones: Milestone[];
 }

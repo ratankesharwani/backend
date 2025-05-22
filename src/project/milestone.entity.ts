@@ -15,6 +15,8 @@ export class Milestone {
   @Column({ nullable: true }) // add this to match payload
   description: string;
 
-  @ManyToOne(() => Project, project => project.milestones)
+  @ManyToOne(() => Project, (project) => project.milestones, {
+    onDelete: 'CASCADE',
+  })
   project: Project;
 }

@@ -3,7 +3,7 @@ import { ProjectsService } from './project.service';
 
 @Controller('projects')
 export class ProjectsController {
-  constructor(private projectsService: ProjectsService) {}
+  constructor(private projectsService: ProjectsService) { }
 
   @Get()
   findAll() {
@@ -37,9 +37,26 @@ export class ProjectsController {
   }
 
   @Put(':id')
-  update(@Param('id') id: number, @Body() projectData: any) {
-    return this.projectsService.update(id, projectData);
+  async update(@Param('id') id: number, @Body() projectData: any) {
+    try {
+      const result = await this.projectsService.update(id, projectData);
+      return {
+        status: 'success',
+        message: 'Project updated successfully',
+        data: result,
+      };
+    } catch (error) {
+      throw new HttpException(
+        {
+          status: 'error',
+          message: error.message || 'Something went wrong while updating the project',
+          error: error?.response || null,
+        },
+        error.status || HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
+
 
   @Delete(':id')
   remove(@Param('id') id: number) {
